@@ -161,7 +161,7 @@ static void tc_standby(struct tc_data *td, s32 standby)
 {
 	if (gpio_is_valid(td->pwn_gpio))
 		gpio_set_value(td->pwn_gpio, standby ? 1 : 0);
-	pr_debug("tc_standby: powerdown=%x, power_gp=0x%x\n", standby, td->pwn_gpio);
+	pr_info("tc_standby: powerdown=%x, power_gp=0x%x\n", standby, td->pwn_gpio);
 	msleep(2);
 }
 
@@ -1632,7 +1632,7 @@ static s32 tc358743_read_reg(struct sensor_data *sensor, u16 reg, void *rxbuf)
 		pr_err("%s:reg=%x ret=%d\n", __func__, reg, ret);
 		return ret;
 	}
-//	pr_debug("%s:reg=%x,val=%x\n", __func__, reg, ((char *)rxbuf)[0]);
+//	pr_info("%s:reg=%x,val=%x\n", __func__, reg, ((char *)rxbuf)[0]);
 	return 0;
 }
 
@@ -1679,7 +1679,7 @@ static s32 tc358743_read_reg_val16(struct sensor_data *sensor, u16 reg)
 		pr_err("%s:reg=%x ret=%d\n", __func__, reg, ret);
 		return ret;
 	}
-//	pr_debug("%s:reg=%x,val=%x\n", __func__, reg, ((char *)rxbuf)[0]);
+//	pr_info("%s:reg=%x,val=%x\n", __func__, reg, ((char *)rxbuf)[0]);
 	return rxbuf1[0] | (rxbuf2[0] << 8);
 #else
 	u32 val1 = 0;
@@ -1716,7 +1716,7 @@ static s32 tc358743_write_reg(struct sensor_data *sensor, u16 reg, u32 val, int 
 		return ret;
 	}
 	if ((reg < 0x7000) || (reg >= 0x7100)) {
-		if (0) pr_debug("%s:reg=%x,val=%x 8543=%02x\n", __func__, reg, val, tc358743_read_reg_val(sensor, 0x8543));
+		if (0) pr_info("%s:reg=%x,val=%x 8543=%02x\n", __func__, reg, val, tc358743_read_reg_val(sensor, 0x8543));
 	}
 	return 0;
 }
@@ -1753,7 +1753,7 @@ static int tc_get_fps(struct sensor_data *sensor)
 	if (frame_interval > 0)
 		fps = DIV_ROUND_CLOSEST(10000, frame_interval);
 
-	pr_debug("%s: frame_interval = %d*100us, fps = %d\n",
+	pr_info("%s: frame_interval = %d*100us, fps = %d\n",
 		 __func__, frame_interval, fps);
 
 	return fps;
@@ -1790,7 +1790,7 @@ static void tc358743_software_reset(struct sensor_data *sensor, u16 mask)
 {
 	int freq = sensor->mclk / 10000;
 
-	pr_debug("%s: mask: %04x freq: %d\n", __func__, mask, freq);
+	pr_info("%s: mask: %04x freq: %d\n", __func__, mask, freq);
 
 	tc358743_write_reg(sensor, 0x7080, 0, 2);
 
@@ -1807,14 +1807,14 @@ static void tc358743_software_reset(struct sensor_data *sensor, u16 mask)
 
 static void tc358743_enable_edid(struct sensor_data *sensor)
 {
-	pr_debug("Activate EDID\n");
+	pr_info("Activate EDID\n");
 	// EDID
 	tc358743_write_reg(sensor, 0x85c7, 0x01, 1);		// EDID MODE REGISTER: nternal EDID-RAM & DDC2B mode
 	tc358743_write_reg(sensor, 0x85ca, 0x00, 1);
 	tc358743_write_reg(sensor, 0x85cb, 0x01, 1);		// 0x85cb:0x85ca - EDID Length = 0x01:00 (Size = 0x100 = 256)
 	tc358743_write_reg(sensor, 0x8543, 0x36, 1);		// DDC CONTROL: DDC_ACK output terminal H active, DDC5V_active detect delay 200ms
 	tc358743_write_reg(sensor, 0x854a, 0x01, 1);		// mark init done
-	if (0) pr_debug("%s: c7=%02x ca=%02x cb=%02x 43=%02x 4a=%02x\n", __func__,
+	if (0) pr_info("%s: c7=%02x ca=%02x cb=%02x 43=%02x 4a=%02x\n", __func__,
 		tc358743_read_reg_val(sensor, 0x85c7),
 		tc358743_read_reg_val(sensor, 0x85ca),
 		tc358743_read_reg_val(sensor, 0x85cb),
@@ -1833,7 +1833,7 @@ static int tc358743_write_edid(struct sensor_data *sensor, const u8 *edid, int l
 	reg = 0x8C00;
 	off = 0;
 	size = ARRAY_SIZE(au8Buf) - 2;
-	pr_debug("Write EDID: %d (%d)\n", len, size);
+	pr_info("Write EDID: %d (%d)\n", len, size);
 	while (len > 0) {
 		i = 0;
 		au8Buf[i++] = (reg >> 8) & 0xff;
@@ -1873,7 +1873,7 @@ static s32 power_control(struct tc_data *td, int on)
 	int i;
 	int ret = 0;
 
-	pr_debug("%s: %d\n", __func__, on);
+	pr_info("%s: %d\n", __func__, on);
 	if (sensor->on != on) {
 		if (on) {
 			for (i = 0; i < REGULATOR_CNT; i++) {
@@ -1932,10 +1932,10 @@ static int get_pixelformat(enum tc358743_frame_rate frame_rate, enum tc358743_mo
 	int ifmt = get_format_index(frame_rate, mode);
 
 	if (ifmt < 0) {
-		pr_debug("%s: unsupported format, %d, %d\n", __func__, frame_rate, mode);
+		pr_info("%s: unsupported format, %d, %d\n", __func__, frame_rate, mode);
 		return 0;
 	}
-	pr_debug("%s: %s (%x, %x)\n", __func__,
+	pr_info("%s: %s (%x, %x)\n", __func__,
 		tc358743_formats[ifmt].description,
 		tc358743_formats[ifmt].pixelformat,
 		tc358743_formats[ifmt].flags);
@@ -1968,7 +1968,7 @@ int set_frame_rate_mode(struct tc_data *td,
 		tc358743_mode_info_data[frame_rate][mode].width;
 	sensor->pix.height =
 		tc358743_mode_info_data[frame_rate][mode].height;
-	pr_debug("%s: Set %d regs from %p for frs %d mode %d with width %d height %d\n", __func__,
+	pr_info("%s: Set %d regs from %p for frs %d mode %d with width %d height %d\n", __func__,
 		iModeSettingArySize,
 		pModeSetting,
 		frame_rate,
@@ -2037,7 +2037,7 @@ int mipi_reset(void *mipi_csi2_info,
 	if (!lanes)
 		lanes = 4;
 
-	pr_debug("%s: mipi_csi2_info:\n"
+	pr_info("%s: mipi_csi2_info:\n"
 	"mipi_en:       %d\n"
 	"datatype:      %d\n"
 	"dphy_clk:      %p\n"
@@ -2063,7 +2063,7 @@ int mipi_reset(void *mipi_csi2_info,
 		return -1;
 	}
 	lanes = mipi_csi2_set_lanes2(mipi_csi2_info, lanes);
-	pr_debug("Now Using %d lanes\n", lanes);
+	pr_info("Now Using %d lanes\n", lanes);
 
 	mipi_csi2_reset(mipi_csi2_info);
 	mipi_csi2_set_datatype(mipi_csi2_info, tc358743_mode_info_data[frame_rate][mode].flags);
@@ -2091,7 +2091,7 @@ int mipi_wait(void *mipi_csi2_info)
 	}
 
 	for (j = 0; j < i; j++) {
-		pr_debug("%d  mipi csi2 dphy status %x\n", j, mipi_reg_test[j]);
+		pr_info("%d  mipi csi2 dphy status %x\n", j, mipi_reg_test[j]);
 	}
 
 	i = 0;
@@ -2110,7 +2110,7 @@ int mipi_wait(void *mipi_csi2_info)
 	}
 
 	for (j = 0; j < i; j++) {
-		pr_debug("%d  mipi csi2 err1 %x\n", j, mipi_reg_test[j]);
+		pr_info("%d  mipi csi2 err1 %x\n", j, mipi_reg_test[j]);
 	}
 	return 0;
 }
@@ -2123,10 +2123,10 @@ static int tc358743_init_mode(struct tc_data *td,
 	int retval = 0;
 	void *mipi_csi2_info;
 
-	pr_debug("%s rate: %d mode: %d\n", __func__, frame_rate, mode);
+	pr_info("%s rate: %d mode: %d\n", __func__, frame_rate, mode);
 	if ((mode >= tc358743_mode_MAX || mode < 0)
 		&& (mode != tc358743_mode_INIT)) {
-		pr_debug("%s Wrong tc358743 mode detected! %d. Set mode 0\n", __func__, mode);
+		pr_info("%s Wrong tc358743 mode detected! %d. Set mode 0\n", __func__, mode);
 		mode = 0;
 	}
 
@@ -2176,7 +2176,7 @@ static int tc358743_minit(struct tc_data *td)
 		return -1;
 	}
 
-	pr_debug("%s: capture mode: %d fps: %d\n", __func__,
+	pr_info("%s: capture mode: %d fps: %d\n", __func__,
 		sensor->streamcap.capturemode, tgt_fps);
 
 	ret = tc358743_init_mode(td, frame_rate, sensor->streamcap.capturemode);
@@ -2191,7 +2191,7 @@ static int tc358743_reset(struct tc_data *td)
 	int ret;
 
 	for (;;) {
-		pr_debug("%s: RESET\n", __func__);
+		pr_info("%s: RESET\n", __func__);
 		power_control(td, 0);
 		mdelay(100);
 		power_control(td, 1);
@@ -2216,11 +2216,11 @@ static int ioctl_g_ifparm(struct v4l2_int_device *s, struct v4l2_ifparm *p)
 	struct tc_data *td = s->priv;
 	struct sensor_data *sensor = &td->sensor;
 
-	pr_debug("%s\n", __func__);
+	pr_info("%s\n", __func__);
 
 	memset(p, 0, sizeof(*p));
 	p->u.bt656.clock_curr = TC358743_XCLK_MIN; //sensor->mclk;
-	pr_debug("%s: clock_curr=mclk=%d\n", __func__, sensor->mclk);
+	pr_info("%s: clock_curr=mclk=%d\n", __func__, sensor->mclk);
 	p->if_type = V4L2_IF_TYPE_BT656;
 	p->u.bt656.mode = V4L2_IF_TYPE_BT656_MODE_NOBT_8BIT;
 	p->u.bt656.clock_min = TC358743_XCLK_MIN;
@@ -2266,7 +2266,7 @@ static int ioctl_g_parm(struct v4l2_int_device *s, struct v4l2_streamparm *a)
 	struct v4l2_captureparm *cparm = &a->parm.capture;
 	int ret = 0;
 
-	pr_debug("%s type: %x\n", __func__, a->type);
+	pr_info("%s type: %x\n", __func__, a->type);
 	switch (a->type) {
 	/* This is the only case currently handled. */
 	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
@@ -2290,11 +2290,11 @@ static int ioctl_g_parm(struct v4l2_int_device *s, struct v4l2_streamparm *a)
 		break;
 
 	default:
-		pr_debug("   type is unknown - %d\n", a->type);
+		pr_info("   type is unknown - %d\n", a->type);
 		ret = -EINVAL;
 		break;
 	}
-	pr_debug("%s done %d\n", __func__, ret);
+	pr_info("%s done %d\n", __func__, ret);
 	return ret;
 }
 
@@ -2317,7 +2317,7 @@ static int ioctl_s_parm(struct v4l2_int_device *s, struct v4l2_streamparm *a)
 	enum tc358743_mode mode;
 	int ret = 0;
 
-	pr_debug("%s\n", __func__);
+	pr_info("%s\n", __func__);
 	mutex_lock(&td->access_lock);
 
 	/* Make sure power on */
@@ -2357,7 +2357,7 @@ static int ioctl_s_parm(struct v4l2_int_device *s, struct v4l2_streamparm *a)
 
 		if ((u32)a->parm.capture.capturemode >= tc358743_mode_MAX) {
 			a->parm.capture.capturemode = 0;
-			pr_debug("%s: Force mode: %d \n", __func__,
+			pr_info("%s: Force mode: %d \n", __func__,
 				(u32)a->parm.capture.capturemode);
 		}
 
@@ -2385,7 +2385,7 @@ static int ioctl_s_parm(struct v4l2_int_device *s, struct v4l2_streamparm *a)
 				sensor->streamcap.timeperframe = *timeperframe;
 				sensor->streamcap.extendedmode =
 						(u32)a->parm.capture.extendedmode;
-				pr_debug("%s: capture mode: %d\n", __func__,
+				pr_info("%s: capture mode: %d\n", __func__,
 					mode);
 				ret = tc358743_init_mode(td, frame_rate, mode);
 			} else {
@@ -2394,7 +2394,7 @@ static int ioctl_s_parm(struct v4l2_int_device *s, struct v4l2_streamparm *a)
 				a->parm.capture.extendedmode = sensor->streamcap.extendedmode;
 			}
 		} else {
-			pr_debug("%s: Keep current settings\n", __func__);
+			pr_info("%s: Keep current settings\n", __func__);
 		}
 		break;
 
@@ -2405,14 +2405,14 @@ static int ioctl_s_parm(struct v4l2_int_device *s, struct v4l2_streamparm *a)
 	case V4L2_BUF_TYPE_VBI_OUTPUT:
 	case V4L2_BUF_TYPE_SLICED_VBI_CAPTURE:
 	case V4L2_BUF_TYPE_SLICED_VBI_OUTPUT:
-		pr_debug("   type is not " \
+		pr_info("   type is not " \
 			"V4L2_BUF_TYPE_VIDEO_CAPTURE but %d\n",
 			a->type);
 		ret = -EINVAL;
 		break;
 
 	default:
-		pr_debug("   type is unknown - %d\n", a->type);
+		pr_info("   type is unknown - %d\n", a->type);
 		ret = -EINVAL;
 		break;
 	}
@@ -2436,7 +2436,7 @@ static int ioctl_g_ctrl(struct v4l2_int_device *s, struct v4l2_control *vc)
 	struct sensor_data *sensor = &td->sensor;
 	int ret = 0;
 
-	pr_debug("%s\n", __func__);
+	pr_info("%s\n", __func__);
 	switch (vc->id) {
 	case V4L2_CID_BRIGHTNESS:
 		vc->value = sensor->brightness;
@@ -2479,7 +2479,7 @@ static int ioctl_s_ctrl(struct v4l2_int_device *s, struct v4l2_control *vc)
 {
 	int retval = 0;
 
-	pr_debug("In tc358743:ioctl_s_ctrl %d\n",
+	pr_info("In tc358743:ioctl_s_ctrl %d\n",
 		 vc->id);
 
 	switch (vc->id) {
@@ -2536,7 +2536,7 @@ static int ioctl_enum_framesizes(struct v4l2_int_device *s,
 
 	if (!index)
 		index = sensor->streamcap.capturemode;
-	pr_debug("%s, INDEX: %d\n", __func__, index);
+	pr_info("%s, INDEX: %d\n", __func__, index);
 	if (index >= tc358743_mode_MAX)
 		return -EINVAL;
 
@@ -2545,8 +2545,8 @@ static int ioctl_enum_framesizes(struct v4l2_int_device *s,
 			    tc358743_mode_info_data[0][index].width;
 	fsize->discrete.height =
 			    tc358743_mode_info_data[0][index].height;
-	pr_debug("%s %d:%d format: %x\n", __func__, fsize->discrete.width, fsize->discrete.height, fsize->pixel_format);
-	return 0;	
+	pr_info("%s %d:%d format: %x\n", __func__, fsize->discrete.width, fsize->discrete.height, fsize->pixel_format);
+	return 0;
 }
 
 /*!
@@ -2573,7 +2573,7 @@ static int ioctl_g_chip_ident(struct v4l2_int_device *s, int *id)
  */
 static int ioctl_init(struct v4l2_int_device *s)
 {
-	pr_debug("%s\n", __func__);
+	pr_info("%s\n", __func__);
 	return 0;
 }
 
@@ -2593,13 +2593,13 @@ static int ioctl_enum_fmt_cap(struct v4l2_int_device *s,
 
 	if (!index)
 		index = sensor->streamcap.capturemode;
-	pr_debug("%s, INDEX: %d\n", __func__, index);
+	pr_info("%s, INDEX: %d\n", __func__, index);
 	if (index >= tc358743_mode_MAX)
 		return -EINVAL;
 
 	fmt->pixelformat = get_pixelformat(0, index);
 
-	pr_debug("%s: format: %x\n", __func__, fmt->pixelformat);
+	pr_info("%s: format: %x\n", __func__, fmt->pixelformat);
 	return 0;
 }
 
@@ -2614,7 +2614,7 @@ static int ioctl_try_fmt_cap(struct v4l2_int_device *s,
 	struct v4l2_pix_format *pix = &f->fmt.pix;
 	int mode;
 
-	pr_debug("%s\n", __func__);
+	pr_info("%s\n", __func__);
 
 	mutex_lock(&td->access_lock);
 	tgt_fps = sensor->streamcap.timeperframe.denominator /
@@ -2622,7 +2622,7 @@ static int ioctl_try_fmt_cap(struct v4l2_int_device *s,
 
 	frame_rate = tc_fps_to_index(tgt_fps);
 	if (frame_rate < 0) {
-		pr_debug("%s: %d fps (%d,%d) is not supported\n", __func__,
+		pr_info("%s: %d fps (%d,%d) is not supported\n", __func__,
 			 tgt_fps, sensor->streamcap.timeperframe.denominator,
 			 sensor->streamcap.timeperframe.numerator);
 		ret = -EINVAL;
@@ -2632,7 +2632,7 @@ static int ioctl_try_fmt_cap(struct v4l2_int_device *s,
 	sensor->pix.pixelformat = get_pixelformat(frame_rate, mode);
 	sensor->pix.width = pix->width = tc358743_mode_info_data[frame_rate][mode].width;
 	sensor->pix.height = pix->height = tc358743_mode_info_data[frame_rate][mode].height;
-	pr_debug("%s: %dx%d\n", __func__, sensor->pix.width, sensor->pix.height);
+	pr_info("%s: %dx%d\n", __func__, sensor->pix.width, sensor->pix.height);
 
 	pix->pixelformat = sensor->pix.pixelformat;
 	pix->field = V4L2_FIELD_NONE;
@@ -2648,12 +2648,12 @@ static int ioctl_try_fmt_cap(struct v4l2_int_device *s,
 	}
 
 	{
-		pr_debug("SYS_STATUS: 0x%x\n", tc358743_read_reg_val(sensor, 0x8520));
-		pr_debug("VI_STATUS0: 0x%x\n", tc358743_read_reg_val(sensor, 0x8521));
-		pr_debug("VI_STATUS1: 0x%x\n", tc358743_read_reg_val(sensor, 0x8522));
-		pr_debug("VI_STATUS2: 0x%x\n", tc358743_read_reg_val(sensor, 0x8525));
-		pr_debug("VI_STATUS3: 0x%x\n", tc358743_read_reg_val(sensor, 0x8528));
-		pr_debug("%s %d:%d format: %x\n", __func__, pix->width, pix->height, pix->pixelformat);
+		pr_info("SYS_STATUS: 0x%x\n", tc358743_read_reg_val(sensor, 0x8520));
+		pr_info("VI_STATUS0: 0x%x\n", tc358743_read_reg_val(sensor, 0x8521));
+		pr_info("VI_STATUS1: 0x%x\n", tc358743_read_reg_val(sensor, 0x8522));
+		pr_info("VI_STATUS2: 0x%x\n", tc358743_read_reg_val(sensor, 0x8525));
+		pr_info("VI_STATUS3: 0x%x\n", tc358743_read_reg_val(sensor, 0x8528));
+		pr_info("%s %d:%d format: %x\n", __func__, pix->width, pix->height, pix->pixelformat);
 	}
 out:
 	mutex_unlock(&td->access_lock);
@@ -2681,24 +2681,24 @@ static int ioctl_g_fmt_cap(struct v4l2_int_device *s, struct v4l2_format *f)
 	switch (f->type) {
 	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
 		f->fmt.pix = sensor->pix;
-		pr_debug("%s: %dx%d\n", __func__, sensor->pix.width, sensor->pix.height);
+		pr_info("%s: %dx%d\n", __func__, sensor->pix.width, sensor->pix.height);
 		break;
 
 /* TODO: EFA, testing
 	case V4L2_BUF_TYPE_SENSOR:
-		pr_debug("%s: left=%d, top=%d, %dx%d\n", __func__,
+		pr_info("%s: left=%d, top=%d, %dx%d\n", __func__,
 			sensor->spix.left, sensor->spix.top,
 			sensor->spix.swidth, sensor->spix.sheight);
 		f->fmt.spix = sensor->spix;
 		break;
 */
 	case V4L2_BUF_TYPE_PRIVATE:
-		pr_debug("%s: private\n", __func__);
+		pr_info("%s: private\n", __func__);
 		break;
 
 	default:
 		f->fmt.pix = sensor->pix;
-		pr_debug("%s: type=%d, %dx%d\n", __func__, f->type, sensor->pix.width, sensor->pix.height);
+		pr_info("%s: type=%d, %dx%d\n", __func__, f->type, sensor->pix.width, sensor->pix.height);
 		break;
 	}
 	return 0;
@@ -2717,11 +2717,11 @@ static int ioctl_dev_init(struct v4l2_int_device *s)
 	if (td->det_changed) {
 		mutex_lock(&td->access_lock);
 		td->det_changed = 0;
-		pr_debug("%s\n", __func__);
+		pr_info("%s\n", __func__);
 		tc358743_minit(td);
 		mutex_unlock(&td->access_lock);
 	}
-	pr_debug("%s\n", __func__);
+	pr_info("%s\n", __func__);
 	return 0;
 }
 
@@ -3124,7 +3124,7 @@ static void report_netlink(struct tc_data *td)
 		  td->mode, tc358743_mode_info_data[td->fps][td->mode].name,
 		  tc358743_fps_list[td->fps], tc358743_audio_list[td->audio]);
 	kobject_uevent_env(&(sensor->i2c_client->dev.kobj), KOBJ_CHANGE, envp);
-	pr_debug("%s: HDMI RX (%d) mode: %s fps: %d audio: %d\n",
+	pr_info("%s: HDMI RX (%d) mode: %s fps: %d audio: %d\n",
 		__func__, td->mode,
 		tc358743_mode_info_data[td->fps][td->mode].name, td->fps,
 		tc358743_audio_list[td->audio]);
@@ -3224,7 +3224,7 @@ static void tc358743_hdmi_misc_int_handler(struct sensor_data *sd)
 
 	tc358743_write_reg(sd, MISC_INT, misc_int, 1);
 
-	pr_debug("%s: MISC_INT = 0x%02x\n", __func__, misc_int);
+	pr_info("%s: MISC_INT = 0x%02x\n", __func__, misc_int);
 
 	if (misc_int & MASK_I_SYNC_CHG) {
 		/* Reset the HDMI PHY to try to trigger proper lock on the
@@ -3250,16 +3250,16 @@ static void tc358743_hdmi_cbit_int_handler(struct sensor_data *sd)
 
 	tc358743_write_reg(sd, CBIT_INT, cbit_int, 1);
 
-	pr_debug("%s: CBIT_INT = 0x%02x\n", __func__, cbit_int);
+	pr_info("%s: CBIT_INT = 0x%02x\n", __func__, cbit_int);
 
 	if (cbit_int & MASK_I_CBIT_FS) {
-		pr_debug("%s: Audio sample rate changed\n", __func__);
+		pr_info("%s: Audio sample rate changed\n", __func__);
 		// TODO handle audio sample rate
 		cbit_int &= ~MASK_I_CBIT_FS;
 	}
 
 	if (cbit_int & (MASK_I_AF_LOCK | MASK_I_AF_UNLOCK)) {
-		pr_debug("%s: Audio present changed\n",  __func__);
+		pr_info("%s: Audio present changed\n",  __func__);
 		// TODO handle audio present
 		cbit_int &= ~(MASK_I_AF_LOCK | MASK_I_AF_UNLOCK);
 	}
@@ -3277,10 +3277,10 @@ static void tc358743_hdmi_clk_int_handler(struct sensor_data *sd)
 	/* Bit 7 and bit 6 are set even when they are masked */
 	tc358743_write_reg(sd, CLK_INT, clk_int | 0x80 | MASK_I_OUT_H_CHG, 1);
 
-	pr_debug("%s: CLK_INT = 0x%02x\n", __func__, clk_int);
+	pr_info("%s: CLK_INT = 0x%02x\n", __func__, clk_int);
 
 	if (clk_int & (MASK_I_IN_DE_CHG)) {
-		pr_debug("%s: DE size or position has changed\n", __func__);
+		pr_info("%s: DE size or position has changed\n", __func__);
 
 		/* If the source switch to a new resolution with the same pixel
 		 * frequency as the existing (e.g. 1080p25 -> 720p50), the
@@ -3306,19 +3306,19 @@ static void tc358743_hdmi_sys_int_handler(struct sensor_data *sd)
 
 	tc358743_write_reg(sd, SYS_INT, sys_int, 1);
 
-	pr_debug("%s: SYS_INT = 0x%02x\n", __func__, sys_int);
+	pr_info("%s: SYS_INT = 0x%02x\n", __func__, sys_int);
 
 	if (sys_int & MASK_I_DDC) {
 		bool tx_5v = tx_5v_power_present(sd);
 
-		pr_debug("%s: Tx 5V power present: %s\n",
+		pr_info("%s: Tx 5V power present: %s\n",
 			 __func__, tx_5v ?  "yes" : "no");
 
 		sys_int &= ~MASK_I_DDC;
 	}
 
 	if (sys_int & MASK_I_DVI) {
-		pr_debug("%s: HDMI->DVI change detected\n", __func__);
+		pr_info("%s: HDMI->DVI change detected\n", __func__);
 
 		/* Reset the HDMI PHY to try to trigger proper lock on the
 		 * incoming video format. Erase BKSV to prevent that old keys
@@ -3330,7 +3330,7 @@ static void tc358743_hdmi_sys_int_handler(struct sensor_data *sd)
 	}
 
 	if (sys_int & MASK_I_HDMI) {
-		pr_debug("%s: DVI->HDMI change detected\n", __func__);
+		pr_info("%s: DVI->HDMI change detected\n", __func__);
 
 		/* Register is reset in DVI mode (REF_01, c. 6.6.41) */
 		tc358743_write_reg(sd, ANA_CTL, MASK_APPL_PCSX_NORMAL |
@@ -3351,13 +3351,13 @@ static void tc358743_hdmi_audio_int_handler(struct sensor_data *sd)
 
 	tc358743_write_reg(sd, AUDIO_INT, audio_int, 1);
 
-	pr_debug("%s: AUDIO_INT = 0x%02x\n", __func__, audio_int);
+	pr_info("%s: AUDIO_INT = 0x%02x\n", __func__, audio_int);
 	// TODO: handle audio change
 }
 
 static void tc358743_csi_err_int_handler(struct sensor_data *sd)
 {
-	pr_debug("%s: CSI_ERR = 0x%x\n", __func__,
+	pr_info("%s: CSI_ERR = 0x%x\n", __func__,
 		 tc358743_read_reg_val(sd, CSI_ERR));
 
 	tc358743_write_reg(sd, CSI_INT_CLR, MASK_ICRER, 1);
@@ -3369,7 +3369,7 @@ static irqreturn_t tc358743_detect_handler(int irq, void *data)
 	struct sensor_data *sd = &td->sensor;
 	s32 intstatus = tc358743_read_reg_val(sd, INTSTATUS);
 
-	pr_debug("%s: IntStatus = 0x%04x\n", __func__, intstatus);
+	pr_info("%s: IntStatus = 0x%04x\n", __func__, intstatus);
 
 	if (intstatus & MASK_HDMI_INT) {
 		u8 hdmi_int0 = tc358743_read_reg_val(sd, HDMI_INT0);
@@ -3402,7 +3402,7 @@ static irqreturn_t tc358743_detect_handler(int irq, void *data)
 
 	/* Should not happen but sometimes the mask seems not to work */
 	if (intstatus) {
-		pr_debug("%s: interrupts 0x%04x not handled\n",
+		pr_info("%s: interrupts 0x%04x not handled\n",
 			 __func__, intstatus);
 		tc358743_write_reg(sd, INTSTATUS, intstatus, 2);
 	}
@@ -3662,7 +3662,7 @@ static int tc358743_probe(struct i2c_client *client,
 	sensor->pix.pixelformat = get_pixelformat(0, mode);
 	sensor->pix.width = tc358743_mode_info_data[0][mode].width;
 	sensor->pix.height = tc358743_mode_info_data[0][mode].height;
-	pr_debug("%s: format: %x, capture mode: %d fps: %d width: %d height: %d\n",
+	pr_info("%s: format: %x, capture mode: %d fps: %d width: %d height: %d\n",
 		__func__, sensor->pix.pixelformat, mode,
 		sensor->streamcap.timeperframe.denominator *
 		sensor->streamcap.timeperframe.numerator,
