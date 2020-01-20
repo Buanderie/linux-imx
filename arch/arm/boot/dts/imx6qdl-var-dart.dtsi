@@ -224,7 +224,7 @@
 		pwn-gpios = <&gpio3 13 1>;
 		rst-gpios = <&gpio4 22 0>;
 		csi_id = <0>;
-		mclk = <27000000>;
+		mclk = <42000000>;
 		mclk_source = <0>;
 	};
 
