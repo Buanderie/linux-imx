@@ -524,14 +524,14 @@
 		};
 
     /* INS UART */
-    &uart4 {
+    uart4 {
     	pinctrl-names = "default";
     	pinctrl-0 = <&pinctrl_ins_uart4>;
     	status = "okay"; dma-names = "","";
     };
 
     /* Payload UART */
-    &uart5 {
+    uart5 {
     	pinctrl-names = "default";
     	pinctrl-0 = <&pinctrl_pay_uart5>;
     	status = "okay";
