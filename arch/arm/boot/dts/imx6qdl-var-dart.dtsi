@@ -500,11 +500,44 @@
 			>;
 		};
 
+		/* INS serial line */
+		pinctrl_ins_uart4: ins-uart4-grp {	/* RX/TX */
+			fsl,pins = <
+				MX6QDL_PAD_KEY_ROW0__UART4_RX_DATA 	0x1b0b1
+				MX6QDL_PAD_KEY_COL0__UART4_TX_DATA 	0x1b0b1
+			>;
+		};
+
+		/* Payload serial line */
+		pinctrl_pay_uart5: pay-uart5-grp {	/* RX/TX */
+			fsl,pins = <
+				MX6QDL_PAD_KEY_ROW1__UART5_RX_DATA 	0x1b0b1
+				MX6QDL_PAD_KEY_COL1__UART5_TX_DATA 	0x1b0b1
+			>;
+		};
+
+
 		pinctrl_usbotg_var: usbotggrp-3 {
 			fsl,pins = <
 				MX6QDL_PAD_ENET_RX_ER__USB_OTG_ID 0x17059
 			>;
 		};
+
+    /* INS UART */
+    &uart4 {
+    	pinctrl-names = "default";
+    	pinctrl-0 = <&pinctrl_ins_uart4>;
+    	status = "okay"; dma-names = "","";
+    };
+
+    /* Payload UART */
+    &uart5 {
+    	pinctrl-names = "default";
+    	pinctrl-0 = <&pinctrl_pay_uart5>;
+    	status = "okay";
+    	dma-names = "","";
+    };
+
 
 		pinctrl_usdhc1_1: usdhc1grp {
 			fsl,pins = <
