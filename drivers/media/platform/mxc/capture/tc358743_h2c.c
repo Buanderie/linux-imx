@@ -1461,13 +1461,13 @@ static const struct tc358743_mode_info tc358743_mode_info_data[tc358743_max_fps]
 		ARRAY_SIZE(tc358743_setting_YUV422_2lane_60fps_640_480_125Mhz),
 		MIPI_DT_YUV422,
 		},
-	[tc358743_30_fps][tc358743_mode_480P_720_480] =
-		{"720x480@30", tc358743_mode_480P_720_480,  720, 480,
-		6, (0x02)<<8|(0x00), 2, 125,
-		tc358743_setting_YUV422_2lane_60fps_720_480_125Mhz,
-		ARRAY_SIZE(tc358743_setting_YUV422_2lane_60fps_720_480_125Mhz),
-		MIPI_DT_YUV422,
-		},
+	// [tc358743_30_fps][tc358743_mode_480P_720_480] =
+	// 	{"720x480@30", tc358743_mode_480P_720_480,  720, 480,
+	// 	6, (0x02)<<8|(0x00), 2, 125,
+	// 	tc358743_setting_YUV422_2lane_60fps_720_480_125Mhz,
+	// 	ARRAY_SIZE(tc358743_setting_YUV422_2lane_60fps_720_480_125Mhz),
+	// 	MIPI_DT_YUV422,
+	// 	},
 	[tc358743_60_fps][tc358743_mode_480P_720_480] =
 		{"720x480@60", tc358743_mode_480P_720_480,  720, 480,
 		6, (0x02)<<8|(0x00), 2, 125,
@@ -1475,27 +1475,27 @@ static const struct tc358743_mode_info tc358743_mode_info_data[tc358743_max_fps]
 		ARRAY_SIZE(tc358743_setting_YUV422_2lane_60fps_720_480_125Mhz),
 		MIPI_DT_YUV422,
 		},
-	[tc358743_60_fps][tc358743_mode_1024x768] =
-		{"1024x768@60", tc358743_mode_1024x768,  1024, 768,
-		16, 60, 4, 125,
-		tc358743_setting_YUV422_4lane_1024x768_60fps_125MHz,
-		ARRAY_SIZE(tc358743_setting_YUV422_4lane_1024x768_60fps_125MHz),
-		MIPI_DT_YUV422
-		},
-	[tc358743_75_fps][tc358743_mode_1024x768] =
-		{"1024x768@75", tc358743_mode_1024x768,  1024, 768,
-		16, 75, 4, 125,
-		tc358743_setting_YUV422_4lane_1024x768_75fps_300MHz,
-		ARRAY_SIZE(tc358743_setting_YUV422_4lane_1024x768_75fps_300MHz),
-		MIPI_DT_YUV422
-		},
-	[tc358743_30_fps][tc358743_mode_720P_1280_720] =
-		{"1280x720-2lane@30", tc358743_mode_720P_1280_720,  1280, 720,
-		12, (0x3e)<<8|(0x3c), 2, 125,
-		tc358743_setting_YUV422_2lane_30fps_720P_1280_720_125MHz,
-		ARRAY_SIZE(tc358743_setting_YUV422_2lane_30fps_720P_1280_720_125MHz),
-		MIPI_DT_YUV422,
-		},
+	// [tc358743_60_fps][tc358743_mode_1024x768] =
+	// 	{"1024x768@60", tc358743_mode_1024x768,  1024, 768,
+	// 	16, 60, 4, 125,
+	// 	tc358743_setting_YUV422_4lane_1024x768_60fps_125MHz,
+	// 	ARRAY_SIZE(tc358743_setting_YUV422_4lane_1024x768_60fps_125MHz),
+	// 	MIPI_DT_YUV422
+	// 	},
+	// [tc358743_75_fps][tc358743_mode_1024x768] =
+	// 	{"1024x768@75", tc358743_mode_1024x768,  1024, 768,
+	// 	16, 75, 4, 125,
+	// 	tc358743_setting_YUV422_4lane_1024x768_75fps_300MHz,
+	// 	ARRAY_SIZE(tc358743_setting_YUV422_4lane_1024x768_75fps_300MHz),
+	// 	MIPI_DT_YUV422
+	// 	},
+	// [tc358743_30_fps][tc358743_mode_720P_1280_720] =
+	// 	{"1280x720-2lane@30", tc358743_mode_720P_1280_720,  1280, 720,
+	// 	12, (0x3e)<<8|(0x3c), 2, 125,
+	// 	tc358743_setting_YUV422_2lane_30fps_720P_1280_720_125MHz,
+	// 	ARRAY_SIZE(tc358743_setting_YUV422_2lane_30fps_720P_1280_720_125MHz),
+	// 	MIPI_DT_YUV422,
+	// 	},
 	[tc358743_60_fps][tc358743_mode_720P_1280_720] =
 		{"1280x720-2lane@60", tc358743_mode_720P_1280_720,  1280, 720,
 		12, (0x3e)<<8|(0x3c), 2, 125,
@@ -1503,34 +1503,34 @@ static const struct tc358743_mode_info tc358743_mode_info_data[tc358743_max_fps]
 		ARRAY_SIZE(tc358743_setting_YUV422_2lane_30fps_720P_1280_720_125MHz),
 		MIPI_DT_YUV422,
 		},
-	[tc358743_30_fps][tc358743_mode_720P_60_1280_720] =
-		{"1280x720-4lane-133Mhz@30", tc358743_mode_720P_60_1280_720,  1280, 720,
-		12, 0, 4, 133,
-		tc358743_setting_YUV422_4lane_720P_60fps_1280_720_133Mhz,
-		ARRAY_SIZE(tc358743_setting_YUV422_4lane_720P_60fps_1280_720_133Mhz),
-		MIPI_DT_YUV422
-		},
-	[tc358743_60_fps][tc358743_mode_720P_60_1280_720] =
-		{"1280x720-4lane@60", tc358743_mode_720P_60_1280_720,  1280, 720,
-		12, 0, 4, 133,
-		tc358743_setting_YUV422_4lane_720P_60fps_1280_720_133Mhz,
-		ARRAY_SIZE(tc358743_setting_YUV422_4lane_720P_60fps_1280_720_133Mhz),
-		MIPI_DT_YUV422
-		},
-	[tc358743_30_fps][tc358743_mode_1080P_1920_1080] =
-		{"1920x1080@30", tc358743_mode_1080P_1920_1080,  1920, 1080,
-		15, 0xa, 4, 300,
-		tc358743_setting_YUV422_4lane_1080P_30fps_1920_1080_300MHz,
-		ARRAY_SIZE(tc358743_setting_YUV422_4lane_1080P_30fps_1920_1080_300MHz),
-		MIPI_DT_YUV422
-		},
-	[tc358743_60_fps][tc358743_mode_1080P_1920_1080] =
-		{"1920x1080@60", tc358743_mode_1080P_1920_1080,  1920, 1080,
-		15, 0x0b, 4, 300,
-		tc358743_setting_YUV422_4lane_1080P_60fps_1920_1080_300MHz,
-		ARRAY_SIZE(tc358743_setting_YUV422_4lane_1080P_60fps_1920_1080_300MHz),
-		MIPI_DT_YUV422
-		},
+	// [tc358743_30_fps][tc358743_mode_720P_60_1280_720] =
+	// 	{"1280x720-4lane-133Mhz@30", tc358743_mode_720P_60_1280_720,  1280, 720,
+	// 	12, 0, 4, 133,
+	// 	tc358743_setting_YUV422_4lane_720P_60fps_1280_720_133Mhz,
+	// 	ARRAY_SIZE(tc358743_setting_YUV422_4lane_720P_60fps_1280_720_133Mhz),
+	// 	MIPI_DT_YUV422
+	// 	},
+	// [tc358743_60_fps][tc358743_mode_720P_60_1280_720] =
+	// 	{"1280x720-4lane@60", tc358743_mode_720P_60_1280_720,  1280, 720,
+	// 	12, 0, 4, 133,
+	// 	tc358743_setting_YUV422_4lane_720P_60fps_1280_720_133Mhz,
+	// 	ARRAY_SIZE(tc358743_setting_YUV422_4lane_720P_60fps_1280_720_133Mhz),
+	// 	MIPI_DT_YUV422
+	// 	},
+	// [tc358743_30_fps][tc358743_mode_1080P_1920_1080] =
+	// 	{"1920x1080@30", tc358743_mode_1080P_1920_1080,  1920, 1080,
+	// 	15, 0xa, 4, 300,
+	// 	tc358743_setting_YUV422_4lane_1080P_30fps_1920_1080_300MHz,
+	// 	ARRAY_SIZE(tc358743_setting_YUV422_4lane_1080P_30fps_1920_1080_300MHz),
+	// 	MIPI_DT_YUV422
+	// 	},
+	// [tc358743_60_fps][tc358743_mode_1080P_1920_1080] =
+	// 	{"1920x1080@60", tc358743_mode_1080P_1920_1080,  1920, 1080,
+	// 	15, 0x0b, 4, 300,
+	// 	tc358743_setting_YUV422_4lane_1080P_60fps_1920_1080_300MHz,
+	// 	ARRAY_SIZE(tc358743_setting_YUV422_4lane_1080P_60fps_1920_1080_300MHz),
+	// 	MIPI_DT_YUV422
+	// 	},
 };
 
 static int tc358743_probe(struct i2c_client *adapter,
