@@ -226,138 +226,269 @@ static int tc_regulator_init(struct tc_data *td, struct device *dev)
 	return ret;
 }
 
-static const u8 cHDMIEDID[256] =
-"00ffffffffffff005262888800888888"
-"1c150103800000780aEE91A3544C9926"
-"0F505400000001010101010101010101"
-"010101010101011d007251d01e206e28"
-"5500c48e2100001e8c0ad08a20e02d10"
-"103e9600138e2100001e000000"
-													"fc0054"   //FC, 00, Device name ("Toshiba-H2C")
-"6f73686962612d4832430a20000000"
-															"FD"
-"003b3d0f2e0f1e0a2020202020200100"
-
-"0203"                                //CEA EDID, V3
-		"20"                              //offset to DTDs,
-			"42"                            //num of native DTDs | 0x40 (basic audio support)
-				"4d841303021211012021223c"    //(Length|0x40), then list of VICs.
-"3d3e"
-		"23090707"                        //(Length|0x20), then audio data block
-						"66030c00300080"          //(Length|0x60), then vendor specific block
-													"E3007F"    //?? Reserved DCB type 7, length 3
-"8c0ad08a20e02d10103e9600c48e2100"    //DTD #1
-"0018"
-		"8c0ad08a20e02d10103e9600138e"    //DTD #2
-"21000018"
-				"8c0aa01451f01600267c4300"    //DTD #3
-"138e21000098"
-						"00000000000000000000"    //End. 0 padded.
-"00000000000000000000000000000000"
-"00000000000000000000000000000000";
-
-// static const u8 cHDMIEDID[256] = {
-// 	/* FIXME! This is the edid that my ASUS HDMI monitor returns */
-// 	0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00,		//0 - header[8] - fixed pattern
-// 	0x04, 0x69,						//8 - manufacturer_name[2]
-// 	0xf3, 0x24,						//10 - product_code[2]
-// 	0xd6, 0x12, 0x00, 0x00,					//12 - serial_number[4]
-// 	0x16,							//16 - week
-// 	0x16,							//17 - year 22+1990=2012
-// 	0x01,							//18 - version
-// 	0x03,							//19 - revision
-// 	0x80,							//20 - video_input_definition(digital input)
-// 	0x34,							//21 - max_size_horizontal 52cm
-// 	0x1d,							//22 - max_size_vertical 29cm
-// 	0x78,							//23 - gamma
-// 	0x3a,							//24 - feature_support (RGB 4:4:4 + YCrCb 4:4:4 + YCrCb 4:2:2)
-// 	0xc7, 0x20, 0xa4, 0x55, 0x49, 0x99, 0x27, 0x13, 0x50, 0x54,	//25 - color_characteristics[10]
-// 	0xbf, 0xef, 0x00,					//35 - established_timings[3]
-// 	0x71, 0x4f, 0x81, 0x40, 0x81, 0x80, 0x95, 0x00, 0xb3, 0x00, 0xd1, 0xc0, 0x01, 0x01, 0x01, 0x01,	//38 - standard_timings[8]
-// /* 1080P */
-// 	0x02, 0x3a,						//54(0) - descriptor[0], 0x3a02 = 148.50 MHz
-// 	0x80,							//56(2) h - active 0x780 (1920)
-// 	0x18,							//57(3) h - blank 0x118 (280)
-// 	0x71,							//58(4)
-// 	0x38,							//59(5) v - active 0x438 (1080)
-// 	0x2d,							//60(6) v - blank 0x02d(45)
-// 	0x40,							//61(7)
-// 	0x58,							//62(8) - h sync offset(0x58)
-// 	0x2c,							//63(9) - h sync width(0x2c)
-// 	0x45,							//64(10) - v sync offset(0x4), v sync width(0x5)
-// 	0x00,							//65(11)
-// 	0x09,							//66(12) - h display size (0x209) 521 mm
-// 	0x25,							//67(13) - v display size (0x125) 293 mm
-// 	0x21,							//68(14)
-// 	0x00,							//69(15) - h border pixels
-// 	0x00,							//70(16) - v border pixels
-// 	0x1e,							//71(17) - no stereo, digital separate, hsync+, vsync+
-// 	0x00, 0x00, 0x00, 0xff, 0x00,							//72 - descriptor[1]
-// 	0x43, 0x36, 0x4c, 0x4d, 0x54, 0x46, 0x30, 0x30, 0x34, 0x38, 0x32, 0x32,	0x0a,	//"C6LMTF004822\n"
-// 	0x00, 0x00, 0x00, 0xfd, 0x00,							//90 - descriptor[2]
-// 	0x37, 0x4b, 0x1e, 0x55, 0x10, 0x00, 0x0a, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
-// 	0x00, 0x00, 0x00, 0xfc, 0x00, 							//108 - descriptor[3]
-// 	0x41, 0x53, 0x55, 0x53, 0x20, 0x56, 0x48, 0x32, 0x34, 0x32, 0x48, 0x0a, 0x20, 	//"ASUS VH242H\n "
-// 	0x01,							//126 - extension_flag
-// 	0x68,							//127 - checksum
-//
-// 	0x02,							//0 - cea-861 extension
-// 	0x03,							//1 - rev 3
-// 	0x22,							//2 - detailed timings at offset 34
-// 	0x71,							//3 - # of detailed timing descriptor
-// 	0x4f, 0x01, 0x02, 0x03, 0x11, 0x12,			//4
-// 	0x13, 0x04, 0x14, 0x05, 0x0e, 0x0f,			//10
-// 	0x1d, 0x1e, 0x1f, 0x10, 0x23, 0x09,			//16
-// 	0x07, 0x01, 0x83, 0x01, 0x00, 0x00,			//22
-// 	0x65, 0x03, 0x0c, 0x00, 0x10, 0x00,			//28
-// /* 720x480@59.94  27000000/858/525 = 59.94 Hz */
-// 	0x8c, 0x0a,				//34 - descriptor[0] - 0x0a8c - 27 Mhz
-// 	0xd0,					//h - active 0x2d0 (720)
-// 	0x8a,					//h - blank 0x8a(138)
-// 	0x20,
-// 	0xe0,					//v - active 0x1e0 (480)
-// 	0x2d,					//v - blank 0x2d (45)
-// 	0x10,
-// 	0x10, 0x3e, 0x96, 0x00, 0x09, 0x25, 0x21, 0x00, 0x00, 0x18,
-// /* 1280x720@60  74250000/1650/750 = 60 Hz*/
-// 	0x01, 0x1d,				//52 - 0x1d01 74.25MHz
-// 	0x00,					//h - active (0x500)1280
-// 	0x72,					//h - blank (0x172)370
-// 	0x51,
-// 	0xd0,					//v active 0x2d0(720)
-// 	0x1e,					//v blank 0x1e(30)
-// 	0x20,
-// 	0x6e, 0x28, 0x55, 0x00, 0x09, 0x25, 0x21, 0x00, 0x00, 0x1e,
-// /* 1280x720@50  74250000/1980/750 = 50 Hz  */
-// 	0x01, 0x1d,				//70 - 0x1d01 74.25MHz
-// 	0x00,					//h - active (0x500)1280
-// 	0xbc,					//h - blank (0x2bc)700
-// 	0x52,
-// 	0xd0,					//v active 0x2d0 (720)
-// 	0x1e,					//v blank 0x1e(30)
-// 	0x20,
-// 	0xb8, 0x28, 0x55, 0x40, 0x09, 0x25, 0x21, 0x00, 0x00, 0x1e,
-// /* 720x576@50 27000000/864/625 = 50 Hz */
-// 	0x8c, 0x0a,				//88 0x0a8c - 27 Mhz
-// 	0xd0,					//h - active 0x2d0(720)
-// 	0x90,					//h - blank 0x90(144)
-// 	0x20,
-// 	0x40,					//v active 0x240(576)
-// 	0x31,					//v blanking 0x31(49)
-// 	0x20,
-// 	0x0c, 0x40, 0x55, 0x00, 0x09, 0x25, 0x21, 0x00, 0x00, 0x18,
-// /* done */
-// 	0x00, 0x00, 0x00, 0x00, 0x00,				//106
-// 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-// 	0x00, 0x00,						//124
-// 	0x00,							//126 - extension_flag
-// 	0x73,							//127 - checksum
-// };
+static const u8 cHDMIEDID[256] = {
+0x00,
+0xff,
+0xff,
+0xff,
+0xff,
+0xff,
+0xff,
+0x00,
+0x52,
+0x62,
+0x88,
+0x88,
+0x00,
+0x88,
+0x88,
+0x88,
+0x1c,
+0x15,
+0x01,
+0x03,
+0x80,
+0x00,
+0x00,
+0x78,
+0x0a,
+0xEE,
+0x91,
+0xA3,
+0x54,
+0x4C,
+0x99,
+0x26,
+0x0F,
+0x50,
+0x54,
+0x00,
+0x00,
+0x00,
+0x01,
+0x01,
+0x01,
+0x01,
+0x01,
+0x01,
+0x01,
+0x01,
+0x01,
+0x01,
+0x01,
+0x01,
+0x01,
+0x01,
+0x01,
+0x01,
+0x01,
+0x1d,
+0x00,
+0x72,
+0x51,
+0xd0,
+0x1e,
+0x20,
+0x6e,
+0x28,
+0x55,
+0x00,
+0xc4,
+0x8e,
+0x21,
+0x00,
+0x00,
+0x1e,
+0x8c,
+0x0a,
+0xd0,
+0x8a,
+0x20,
+0xe0,
+0x2d,
+0x10,
+0x10,
+0x3e,
+0x96,
+0x00,
+0x13,
+0x8e,
+0x21,
+0x00,
+0x00,
+0x1e,
+0x00,
+0x00,
+0x00,
+0xfc,
+0x00,
+0x54,
+0x6f,
+0x73,
+0x68,
+0x69,
+0x62,
+0x61,
+0x2d,
+0x48,
+0x32,
+0x43,
+0x0a,
+0x20,
+0x00,
+0x00,
+0x00,
+0xFD,
+0x00,
+0x3b,
+0x3d,
+0x0f,
+0x2e,
+0x0f,
+0x1e,
+0x0a,
+0x20,
+0x20,
+0x20,
+0x20,
+0x20,
+0x20,
+0x01,
+0x00,
+0x02,
+0x03,
+0x21,
+0x43,
+0x4e,
+0x84,
+0x13,
+0x03,
+0x02,
+0x12,
+0x11,
+0x01,
+0x20,
+0x21,
+0x22,
+0x3c,
+0x3d,
+0x3e,
+0x1f,
+0x23,
+0x09,
+0x07,
+0x07,
+0x66,
+0x03,
+0x0c,
+0x00,
+0x30,
+0x00,
+0x80,
+0xE3,
+0x00,
+0x7F,
+0x8c,
+0x0a,
+0xd0,
+0x8a,
+0x20,
+0xe0,
+0x2d,
+0x10,
+0x10,
+0x3e,
+0x96,
+0x00,
+0xc4,
+0x8e,
+0x21,
+0x00,
+0x00,
+0x18,
+0x8c,
+0x0a,
+0xd0,
+0x8a,
+0x20,
+0xe0,
+0x2d,
+0x10,
+0x10,
+0x3e,
+0x96,
+0x00,
+0x13,
+0x8e,
+0x21,
+0x00,
+0x00,
+0x18,
+0x8c,
+0x0a,
+0xa0,
+0x14,
+0x51,
+0xf0,
+0x16,
+0x00,
+0x26,
+0x7c,
+0x43,
+0x00,
+0x13,
+0x8e,
+0x21,
+0x00,
+0x00,
+0x98,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+};
 
 static const struct reg_value tc358743_setting_YUV422_2lane_30fps_720P_1280_720_125MHz[] = {
   {0x0006, 0x00000040, 0x00000000, 2, 0},
 // Program CSI Tx PLL
-  {0x0020, 0x0000402d, 0x00000000, 2, 0},
+  {0x0020, 0x00008111, 0x00000000, 2, 0},
   {0x0022, 0x00000213, 0x00000000, 2, 0},
 // CSI Tx PHY  (32-bit Registers)
   {0x0140, 0x00000000, 0x00000000, 4, 0},
@@ -366,16 +497,16 @@ static const struct reg_value tc358743_setting_YUV422_2lane_30fps_720P_1280_720_
   {0x014c, 0x00000000, 0x00000000, 4, 0},
   {0x0150, 0x00000000, 0x00000000, 4, 0},
 // CSI Tx PPI  (32-bit Registers)
-  {0x0210, 0x00000e00, 0x00000000, 4, 0},
-  {0x0214, 0x00000001, 0x00000000, 4, 0},
-  {0x0218, 0x00000801, 0x00000000, 4, 0},
-  {0x021c, 0x00000001, 0x00000000, 4, 0},
-  {0x0220, 0x00000001, 0x00000000, 4, 0},
-  {0x0224, 0x00004800, 0x00000000, 4, 0},
-  {0x0228, 0x00000005, 0x00000000, 4, 0},
-  {0x022c, 0x00000000, 0x00000000, 4, 0},
-  {0x0234, 0x0000001f, 0x00000000, 4, 0},
-  {0x0238, 0x00000001, 0x00000000, 4, 0}, //non-continuous clock
+  {0x0210, 0x00002988, 0x00000000, 4, 0},
+  {0x0214, 0x00000005, 0x00000000, 4, 0},
+  {0x0218, 0x00001d04, 0x00000000, 4, 0},
+  {0x021c, 0x00000002, 0x00000000, 4, 0},
+  {0x0220, 0x00000504, 0x00000000, 4, 0},
+  {0x0224, 0x00004600, 0x00000000, 4, 0},
+  {0x0228, 0x0000000A, 0x00000000, 4, 0},
+  {0x022c, 0x00000004, 0x00000000, 4, 0},
+  {0x0234, 0x0000001F, 0x00000000, 4, 0},
+  // {0x0238, 0x00000001, 0x00000000, 4, 0}, //non-continuous clock
   {0x0204, 0x00000001, 0x00000000, 4, 0},
   {0x0518, 0x00000001, 0x00000000, 4, 0},
   {0x0500, 0xa300be82, 0x00000000, 4, 0},
@@ -1491,13 +1622,13 @@ static const struct tc358743_mode_info tc358743_mode_info_data[tc358743_max_fps]
 		ARRAY_SIZE(tc358743_setting_YUV422_2lane_60fps_640_480_125Mhz),
 		MIPI_DT_YUV422,
 		},
-	// [tc358743_30_fps][tc358743_mode_480P_720_480] =
-	// 	{"720x480@30", tc358743_mode_480P_720_480,  720, 480,
-	// 	6, (0x02)<<8|(0x00), 2, 125,
-	// 	tc358743_setting_YUV422_2lane_60fps_720_480_125Mhz,
-	// 	ARRAY_SIZE(tc358743_setting_YUV422_2lane_60fps_720_480_125Mhz),
-	// 	MIPI_DT_YUV422,
-	// 	},
+	[tc358743_30_fps][tc358743_mode_480P_720_480] =
+		{"720x480@30", tc358743_mode_480P_720_480,  720, 480,
+		6, (0x02)<<8|(0x00), 2, 125,
+		tc358743_setting_YUV422_2lane_60fps_720_480_125Mhz,
+		ARRAY_SIZE(tc358743_setting_YUV422_2lane_60fps_720_480_125Mhz),
+		MIPI_DT_YUV422,
+		},
 	[tc358743_60_fps][tc358743_mode_480P_720_480] =
 		{"720x480@60", tc358743_mode_480P_720_480,  720, 480,
 		6, (0x02)<<8|(0x00), 2, 125,
@@ -1505,27 +1636,27 @@ static const struct tc358743_mode_info tc358743_mode_info_data[tc358743_max_fps]
 		ARRAY_SIZE(tc358743_setting_YUV422_2lane_60fps_720_480_125Mhz),
 		MIPI_DT_YUV422,
 		},
-	// [tc358743_60_fps][tc358743_mode_1024x768] =
-	// 	{"1024x768@60", tc358743_mode_1024x768,  1024, 768,
-	// 	16, 60, 4, 125,
-	// 	tc358743_setting_YUV422_4lane_1024x768_60fps_125MHz,
-	// 	ARRAY_SIZE(tc358743_setting_YUV422_4lane_1024x768_60fps_125MHz),
-	// 	MIPI_DT_YUV422
-	// 	},
-	// [tc358743_75_fps][tc358743_mode_1024x768] =
-	// 	{"1024x768@75", tc358743_mode_1024x768,  1024, 768,
-	// 	16, 75, 4, 125,
-	// 	tc358743_setting_YUV422_4lane_1024x768_75fps_300MHz,
-	// 	ARRAY_SIZE(tc358743_setting_YUV422_4lane_1024x768_75fps_300MHz),
-	// 	MIPI_DT_YUV422
-	// 	},
-	// [tc358743_30_fps][tc358743_mode_720P_1280_720] =
-	// 	{"1280x720-2lane@30", tc358743_mode_720P_1280_720,  1280, 720,
-	// 	12, (0x3e)<<8|(0x3c), 2, 125,
-	// 	tc358743_setting_YUV422_2lane_30fps_720P_1280_720_125MHz,
-	// 	ARRAY_SIZE(tc358743_setting_YUV422_2lane_30fps_720P_1280_720_125MHz),
-	// 	MIPI_DT_YUV422,
-	// 	},
+	[tc358743_60_fps][tc358743_mode_1024x768] =
+		{"1024x768@60", tc358743_mode_1024x768,  1024, 768,
+		16, 60, 4, 125,
+		tc358743_setting_YUV422_4lane_1024x768_60fps_125MHz,
+		ARRAY_SIZE(tc358743_setting_YUV422_4lane_1024x768_60fps_125MHz),
+		MIPI_DT_YUV422
+		},
+	[tc358743_75_fps][tc358743_mode_1024x768] =
+		{"1024x768@75", tc358743_mode_1024x768,  1024, 768,
+		16, 75, 4, 125,
+		tc358743_setting_YUV422_4lane_1024x768_75fps_300MHz,
+		ARRAY_SIZE(tc358743_setting_YUV422_4lane_1024x768_75fps_300MHz),
+		MIPI_DT_YUV422
+		},
+	[tc358743_30_fps][tc358743_mode_720P_1280_720] =
+		{"1280x720-2lane@30", tc358743_mode_720P_1280_720,  1280, 720,
+		12, (0x3e)<<8|(0x3c), 2, 125,
+		tc358743_setting_YUV422_2lane_30fps_720P_1280_720_125MHz,
+		ARRAY_SIZE(tc358743_setting_YUV422_2lane_30fps_720P_1280_720_125MHz),
+		MIPI_DT_YUV422,
+		},
 	[tc358743_60_fps][tc358743_mode_720P_1280_720] =
 		{"1280x720-2lane@60", tc358743_mode_720P_1280_720,  1280, 720,
 		12, (0x3e)<<8|(0x3c), 2, 125,
@@ -1533,34 +1664,34 @@ static const struct tc358743_mode_info tc358743_mode_info_data[tc358743_max_fps]
 		ARRAY_SIZE(tc358743_setting_YUV422_2lane_30fps_720P_1280_720_125MHz),
 		MIPI_DT_YUV422,
 		},
-	// [tc358743_30_fps][tc358743_mode_720P_60_1280_720] =
-	// 	{"1280x720-4lane-133Mhz@30", tc358743_mode_720P_60_1280_720,  1280, 720,
-	// 	12, 0, 4, 133,
-	// 	tc358743_setting_YUV422_4lane_720P_60fps_1280_720_133Mhz,
-	// 	ARRAY_SIZE(tc358743_setting_YUV422_4lane_720P_60fps_1280_720_133Mhz),
-	// 	MIPI_DT_YUV422
-	// 	},
-	// [tc358743_60_fps][tc358743_mode_720P_60_1280_720] =
-	// 	{"1280x720-4lane@60", tc358743_mode_720P_60_1280_720,  1280, 720,
-	// 	12, 0, 4, 133,
-	// 	tc358743_setting_YUV422_4lane_720P_60fps_1280_720_133Mhz,
-	// 	ARRAY_SIZE(tc358743_setting_YUV422_4lane_720P_60fps_1280_720_133Mhz),
-	// 	MIPI_DT_YUV422
-	// 	},
-	// [tc358743_30_fps][tc358743_mode_1080P_1920_1080] =
-	// 	{"1920x1080@30", tc358743_mode_1080P_1920_1080,  1920, 1080,
-	// 	15, 0xa, 4, 300,
-	// 	tc358743_setting_YUV422_4lane_1080P_30fps_1920_1080_300MHz,
-	// 	ARRAY_SIZE(tc358743_setting_YUV422_4lane_1080P_30fps_1920_1080_300MHz),
-	// 	MIPI_DT_YUV422
-	// 	},
-	// [tc358743_60_fps][tc358743_mode_1080P_1920_1080] =
-	// 	{"1920x1080@60", tc358743_mode_1080P_1920_1080,  1920, 1080,
-	// 	15, 0x0b, 4, 300,
-	// 	tc358743_setting_YUV422_4lane_1080P_60fps_1920_1080_300MHz,
-	// 	ARRAY_SIZE(tc358743_setting_YUV422_4lane_1080P_60fps_1920_1080_300MHz),
-	// 	MIPI_DT_YUV422
-	// 	},
+	[tc358743_30_fps][tc358743_mode_720P_60_1280_720] =
+		{"1280x720-4lane-133Mhz@30", tc358743_mode_720P_60_1280_720,  1280, 720,
+		12, 0, 4, 133,
+		tc358743_setting_YUV422_4lane_720P_60fps_1280_720_133Mhz,
+		ARRAY_SIZE(tc358743_setting_YUV422_4lane_720P_60fps_1280_720_133Mhz),
+		MIPI_DT_YUV422
+		},
+	[tc358743_60_fps][tc358743_mode_720P_60_1280_720] =
+		{"1280x720-4lane@60", tc358743_mode_720P_60_1280_720,  1280, 720,
+		12, 0, 4, 133,
+		tc358743_setting_YUV422_4lane_720P_60fps_1280_720_133Mhz,
+		ARRAY_SIZE(tc358743_setting_YUV422_4lane_720P_60fps_1280_720_133Mhz),
+		MIPI_DT_YUV422
+		},
+	[tc358743_30_fps][tc358743_mode_1080P_1920_1080] =
+		{"1920x1080@30", tc358743_mode_1080P_1920_1080,  1920, 1080,
+		15, 0xa, 4, 300,
+		tc358743_setting_YUV422_4lane_1080P_30fps_1920_1080_300MHz,
+		ARRAY_SIZE(tc358743_setting_YUV422_4lane_1080P_30fps_1920_1080_300MHz),
+		MIPI_DT_YUV422
+		},
+	[tc358743_60_fps][tc358743_mode_1080P_1920_1080] =
+		{"1920x1080@60", tc358743_mode_1080P_1920_1080,  1920, 1080,
+		15, 0x0b, 4, 300,
+		tc358743_setting_YUV422_4lane_1080P_60fps_1920_1080_300MHz,
+		ARRAY_SIZE(tc358743_setting_YUV422_4lane_1080P_60fps_1920_1080_300MHz),
+		MIPI_DT_YUV422
+		},
 };
 
 static int tc358743_probe(struct i2c_client *adapter,
