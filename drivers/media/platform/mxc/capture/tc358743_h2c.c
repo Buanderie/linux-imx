@@ -486,7 +486,17 @@ static const u8 cHDMIEDID[256] = {
 };
 
 static const struct reg_value tc358743_setting_YUV422_2lane_30fps_720P_1280_720_125MHz[] = {
+  {0x0004, 0x0000, 0x00000000, 2, 0},
+  {0x0002, 0x0f00, 0x00000000, 2, 0},
+  {0x0000, 1, 0xffffffff, 2, 0},
+  {0x0002, 0x0000, 0x00000000, 2, 0},
   {0x0006, 0x0008, 0x00000000, 2, 0},
+
+  {0x0004, 0x0ee4, 0x00000000, 2, 0},
+
+  {0x0014, 0xffff, 0x00000000, 2, 0},
+  {0x0016, 0x051f, 0x00000000, 2, 0},
+
 // Program CSI Tx PLL
   {0x0020, 0x00008111, 0x00000000, 2, 0},
   {0x0022, 0x00000213, 0x00000000, 2, 0},
@@ -2311,6 +2321,11 @@ static int tc358743_init_mode(struct tc_data *td,
 	tc358743_software_reset(sensor, MASK_CTXRST);
 
 	retval = set_frame_rate_mode(td, frame_rate, mode);
+
+	// Also print FPS ?
+	tc_get_fps(sensor);
+	//
+
 	if (retval)
 		return retval;
 
