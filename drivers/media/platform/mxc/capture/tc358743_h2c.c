@@ -488,7 +488,7 @@ static const u8 cHDMIEDID[256] = {
 static const struct reg_value tc358743_setting_YUV422_2lane_30fps_720P_1280_720_125MHz[] = {
   {0x0006, 0x00000040, 0x00000000, 2, 0},
 // Program CSI Tx PLL
-  {0x0020, 0x0000402f, 0x00000000, 2, 0},
+  {0x0020, 0x0000402d, 0x00000000, 2, 0},
   {0x0022, 0x00000213, 0x00000000, 2, 0},
 // CSI Tx PHY  (32-bit Registers)
   {0x0140, 0x00000000, 0x00000000, 4, 0},
@@ -496,26 +496,22 @@ static const struct reg_value tc358743_setting_YUV422_2lane_30fps_720P_1280_720_
   {0x0148, 0x00000000, 0x00000000, 4, 0},
   {0x014c, 0x00000000, 0x00000000, 4, 0},
   {0x0150, 0x00000000, 0x00000000, 4, 0},
-
-  {0x8540, 0x00000068, 0x00000000, 1, 0},
-  {0x8541, 0x00000010, 0x00000000, 1, 0},
-
 // CSI Tx PPI  (32-bit Registers)
-  {0x0210, 0x00001b58, 0x00000000, 4, 0},
-  {0x0214, 0x00000007, 0x00000000, 4, 0},
-  {0x0218, 0x00002806, 0x00000000, 4, 0},
-  {0x021c, 0x00000000, 0x00000000, 4, 0},
-  {0x0220, 0x00000806, 0x00000000, 4, 0},
-  {0x0224, 0x00004268, 0x00000000, 4, 0},
-  {0x0228, 0x00000008, 0x00000000, 4, 0},
-  {0x022c, 0x00000005, 0x00000000, 4, 0},
+  {0x0210, 0x00000e00, 0x00000000, 4, 0},
+  {0x0214, 0x00000001, 0x00000000, 4, 0},
+  {0x0218, 0x00000801, 0x00000000, 4, 0},
+  {0x021c, 0x00000001, 0x00000000, 4, 0},
+  {0x0220, 0x00000001, 0x00000000, 4, 0},
+  {0x0224, 0x00004800, 0x00000000, 4, 0},
+  {0x0228, 0x00000005, 0x00000000, 4, 0},
+  {0x022c, 0x00000000, 0x00000000, 4, 0},
   {0x0234, 0x0000001f, 0x00000000, 4, 0},
   {0x0238, 0x00000001, 0x00000000, 4, 0}, //non-continuous clock
-  // {0x0204, 0x00000001, 0x00000000, 4, 0},
+  {0x0204, 0x00000001, 0x00000000, 4, 0},
   {0x0518, 0x00000001, 0x00000000, 4, 0},
   {0x0500, 0xa300be82, 0x00000000, 4, 0},
 // HDMI Audio
-  {0x8531, 0x00000042, 0x00000000, 1, 0},
+  {0x8531, 0x00000001, 0x00000000, 1, 0},
   {0x8630, 0x000000b0, 0x00000000, 1, 0},
   {0x8631, 0x0000001e, 0x00000000, 1, 0},
   {0x8632, 0x00000004, 0x00000000, 1, 0},
@@ -560,7 +556,6 @@ static const struct reg_value tc358743_setting_YUV422_2lane_30fps_720P_1280_720_
   {0x854a, 0x00000001, 0x00000000, 1, 0},
 // Output Control
   {0x0004, 0x00000cf7, 0x00000000, 2, 0},
-  {0x0204, 0x00000001, 0x00000000, 4, 0},
   };
 
 static const struct reg_value tc358743_setting_YUV422_4lane_1024x768_60fps_125MHz[] = {
@@ -851,9 +846,9 @@ static const struct reg_value tc358743_setting_YUV422_4lane_color_bar_1280_720_1
 // CSI Tx PHY  (32-bit Registers)
   {0x0140, 0x00000000, 0x00000000, 4, 0},
   {0x0144, 0x00000000, 0x00000000, 4, 0},
-  {0x0148, 0x1, 0x00000000, 4, 0},
-  {0x014c, 0x1, 0x00000000, 4, 0},
-  {0x0150, 0x1, 0x00000000, 4, 0},
+  {0x0148, 0x00000000, 0x00000000, 4, 0},
+  {0x014c, 0x00000000, 0x00000000, 4, 0},
+  {0x0150, 0x00000000, 0x00000000, 4, 0},
 // CSI Tx PPI  (32-bit Registers)
   {0x0210, 0x00000e00, 0x00000000, 4, 0},
   {0x0214, 0x00000001, 0x00000000, 4, 0},
@@ -867,7 +862,7 @@ static const struct reg_value tc358743_setting_YUV422_4lane_color_bar_1280_720_1
   {0x0238, 0x00000001, 0x00000000, 4, 0}, //non-continuous clock
   {0x0204, 0x00000001, 0x00000000, 4, 0},
   {0x0518, 0x00000001, 0x00000000, 4, 0},
-  {0x0500, 0xA3008082, 0x00000000, 4, 0}, //{0x0500, 0xa30080a2, 0x00000000, 4, 0},
+  {0x0500, 0xa30080a6, 0x00000000, 4, 0}, //{0x0500, 0xa30080a2, 0x00000000, 4, 0},
 // 1280x720 colorbar
   {0x000a, 0x00000a00, 0x00000000, 2, 0},
   {0x7080, 0x00000082, 0x00000000, 2, 0},
@@ -1655,16 +1650,16 @@ static const struct tc358743_mode_info tc358743_mode_info_data[tc358743_max_fps]
 		ARRAY_SIZE(tc358743_setting_YUV422_4lane_1024x768_75fps_300MHz),
 		MIPI_DT_YUV422
 		},
-	[tc358743_60_fps][tc358743_mode_720P_1280_720] =
+	[tc358743_30_fps][tc358743_mode_720P_1280_720] =
 		{"1280x720-2lane@30", tc358743_mode_720P_1280_720,  1280, 720,
-		12, 50, 2, 125,
+		12, (0x3e)<<8|(0x3c), 2, 125,
 		tc358743_setting_YUV422_2lane_30fps_720P_1280_720_125MHz,
 		ARRAY_SIZE(tc358743_setting_YUV422_2lane_30fps_720P_1280_720_125MHz),
 		MIPI_DT_YUV422,
 		},
 	[tc358743_60_fps][tc358743_mode_720P_1280_720] =
 		{"1280x720-2lane@60", tc358743_mode_720P_1280_720,  1280, 720,
-		12, 50, 2, 125,
+		12, (0x3e)<<8|(0x3c), 2, 125,
 		tc358743_setting_YUV422_2lane_30fps_720P_1280_720_125MHz,
 		ARRAY_SIZE(tc358743_setting_YUV422_2lane_30fps_720P_1280_720_125MHz),
 		MIPI_DT_YUV422,
@@ -1956,7 +1951,7 @@ static void tc358743_software_reset(struct sensor_data *sensor, u16 mask)
 {
 	int freq = sensor->mclk / 10000;
 
-	pr_info("*** tc358743_software_reset : %s: mask: %04x freq: %d\n", __func__, mask, freq);
+	pr_info("%s: mask: %04x freq: %d\n", __func__, mask, freq);
 
 	tc358743_write_reg(sensor, 0x7080, 0, 2);
 
@@ -2316,11 +2311,6 @@ static int tc358743_init_mode(struct tc_data *td,
 	tc358743_software_reset(sensor, MASK_CTXRST);
 
 	retval = set_frame_rate_mode(td, frame_rate, mode);
-
-	// Also print FPS ?
-	tc_get_fps(sensor);
-	//
-
 	if (retval)
 		return retval;
 
@@ -2390,8 +2380,8 @@ static int ioctl_g_ifparm(struct v4l2_int_device *s, struct v4l2_ifparm *p)
 	pr_info("%s\n", __func__);
 
 	memset(p, 0, sizeof(*p));
-	p->u.bt656.clock_curr = sensor->mclk;
-	pr_info("*** ZGEG %s: clock_curr=mclk=%d\n", __func__, sensor->mclk);
+	p->u.bt656.clock_curr = TC358743_XCLK_MIN; //sensor->mclk;
+	pr_info("%s: clock_curr=mclk=%d\n", __func__, sensor->mclk);
 	p->if_type = V4L2_IF_TYPE_BT656;
 	p->u.bt656.mode = V4L2_IF_TYPE_BT656_MODE_NOBT_8BIT;
 	p->u.bt656.clock_min = TC358743_XCLK_MIN;
@@ -3788,9 +3778,6 @@ static int tc358743_probe(struct i2c_client *client,
 
 	retval = of_property_read_u32(dev->of_node, "mclk",
 					&(sensor->mclk));
-
-	// sensor->mclk = 42000000;
-
 	if (retval) {
 		dev_err(dev, "mclk missing or invalid\n");
 		return retval;
