@@ -488,7 +488,7 @@ static const u8 cHDMIEDID[256] = {
 static const struct reg_value tc358743_setting_YUV422_2lane_30fps_720P_1280_720_125MHz[] = {
   {0x0006, 0x00000040, 0x00000000, 2, 0},
 // Program CSI Tx PLL
-  {0x0020, 0x0000402d, 0x00000000, 2, 0},
+  {0x0020, 0x00004058, 0x00000000, 2, 0},
   {0x0022, 0x00000213, 0x00000000, 2, 0},
 // CSI Tx PHY  (32-bit Registers)
   {0x0140, 0x00000000, 0x00000000, 4, 0},
@@ -556,6 +556,7 @@ static const struct reg_value tc358743_setting_YUV422_2lane_30fps_720P_1280_720_
   {0x854a, 0x00000001, 0x00000000, 1, 0},
 // Output Control
   {0x0004, 0x00000cf7, 0x00000000, 2, 0},
+
   };
 
 static const struct reg_value tc358743_setting_YUV422_4lane_1024x768_60fps_125MHz[] = {
@@ -781,7 +782,7 @@ static const struct reg_value tc358743_setting_YUV422_2lane_color_bar_1280_720_1
   {0x0004, 0x00000084, 0x00000000, 2, 0},
   {0x0010, 0x0000001e, 0x00000000, 2, 0},
 // Program CSI Tx PLL
-  {0x0020, 0x0000405c, 0x00000000, 2, 0},
+  {0x0020, 0x0000409b, 0x00000000, 2, 0},
   {0x0022, 0x00000613, 0x00000000, 2, 0},
 // CSI Tx PHY  (32-bit Registers)
   {0x0140, 0x00000000, 0x00000000, 4, 0},
